@@ -1,18 +1,11 @@
 import express from 'express'
-import UserRoute from './../UserRoute'
-import OrgRoute from './../OrgRoute'
-import AssetRoute from './../AssetRoute'
-import CommandRoute from '../CommandRoutes'
+import Workout from './Workout'
 
 class BaseRoutes {
     
     get routes() {
         var app = express()
-        console.log('Base Request')
-        app.use('/users', new UserRoute().routes)
-        app.use('/orgs', new OrgRoute().routes)
-        app.use('/assets', new AssetRoute().routes)
-        app.use('/commands', new CommandRoute().routes)
+        app.use('/allocations', new Workout().routes)
         return app
     }
 }

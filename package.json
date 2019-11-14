@@ -20,5 +20,14 @@
   "bugs": {
     "url": "https://github.com/mandalrajdeep/workout/issues"
   },
-  "homepage": "https://github.com/mandalrajdeep/workout#readme"
+  "homepage": "https://github.com/mandalrajdeep/workout#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.7"
+  }
 }
