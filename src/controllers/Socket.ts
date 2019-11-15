@@ -1,91 +1,88 @@
-import AllocationService from './../services/Allotment';
-import WorkoutController from './Workout';
+import Allocation from '../services/Allotment';
+import Workout from './Workout';
 
 class Socket {
-    public static instance;
+    private workout
 
-    private static workout
-    private static allocations
+    private allocations
 
-    private constructor() {
-        Socket.workout = WorkoutController.getInstance();
-        Socket.allocations = AllocationService.getInstance();
+    private connections
+
+    private total
+
+    constructor() {
+        this.workout = Workout.getInstance();
+        this.allocations = new Allocation();
+        this.connections = {};
+        this.total = 0;
     }
 
-    public static onConnect(socket) {
-        if (!Socket.instance) {
-            Socket.instance = new Socket();
-        }
-        socket.on('new message', Socket.onMessage);
-        socket.on('add user', Socket.onAddUser);
-        socket.on('disconnect', Socket.onDisconnect);
+    public onConnect(socket) {
+        let userAdded = false;
+        const listener = this.workout.emitter();
+        listener.on('workout started', () => {
+            socket.emit('workout', { data: 'Workout has started' });
+        });
+
+        listener.on('workout ended', () => {
+            socket.emit('workout', { data: 'Workout has ended' });
+            delete this.connections[socket.username];
+            socket.disconnect();
+        });
+
+        socket.on('add user', (username) => {
+            if (userAdded) return;
+
+            /*
+             * we store the username in the socket session for this client
+             * if workout has started, no new users
+             */
+
+            socket.username = username;
+            this.total += 1;
+            userAdded = true;
+            try {
+                if (this.workout.isOn() && !this.connections[username]) {
+                    socket.emit('ongoing workout', {
+                        username: socket.username,
+                    });
+                } else {
+                    this.addUser(socket, username);
+                }
+            } catch (err) {
+                socket.emit('illegal user', {
+                    username: socket.username,
+                });
+                socket.disconnect();
+            }
+        });
+        socket.on('disconnect', () => {
+            this.total -= 1;
+            socket.broadcast.emit('user left', {
+                numUsers: this.total,
+                username: socket.username,
+            });
+        });
     }
 
-    private static onAddUser (username) {
-        if (Socket.workout.isOn()) {
-            Socket.allocations.reallocate(socket.username);
+    private addUser(socket, username) {
+        if (this.connections[username]) {
+            socket.sensor = this.allocations.reallocate(username);
         } else {
-            Socket.allocations.allocate(socket.username);
+            socket.sensor = this.allocations.allocate(username);
         }
-
-
+        this.connections[username] = socket.id;
+        socket.emit('login', {
+            numUsers: this.total,
+            username: socket.username,
+            sensor: socket.sensor,
+        });
+        socket.broadcast.emit('user joined', {
+            numUsers: this.total,
+            username: socket.username,
+            sensor: socket.sensor,
+        });
     }
-
-    private static onMessage(data) {
-
-    } 
-
-    private static onDisconnect() {
-
-    }
-};
+}
 
 export default Socket;
-
-
-io.on('connection', (socket) => {
-    var addedUser = false;
-  
-    // when the client emits 'new message', this listens and executes
-    socket.on('new message', (data) => {
-      // we tell the client to execute 'new message'
-      socket.broadcast.emit('new message', {
-        username: socket.username,
-        message: data
-      });
-    });
-  
-    // when the client emits 'add user', this listens and executes
-    socket.on('add user', (username) => {
-      console.log('user', username)
-      if (addedUser) return;
-  
-      // we store the username in the socket session for this client
-      socket.username = username;
-      ++numUsers;
-      addedUser = true;
-      socket.emit('login', {
-        numUsers: numUsers, 
-        data : 'Hello World'
-      });
-      // echo globally (all clients) that a person has connected
-      socket.broadcast.emit('user joined', {
-        username: socket.username,
-        numUsers: numUsers
-      });
-    });
-  
-    // when the user disconnects.. perform this
-    socket.on('disconnect', () => {
-      if (addedUser) {
-        --numUsers;
-  
-        // echo globally that this client has left
-        socket.broadcast.emit('user left', {
-          username: socket.username,
-          numUsers: numUsers
-        });
-      }
-    });
-  });
-  

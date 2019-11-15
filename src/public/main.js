@@ -168,16 +168,34 @@ $(function() {
   
     // Whenever the server emits 'login', log the login message
     socket.on('login', (data) => {
-        console.log(data)
       connected = true;
       // Display the welcome message
-      var message = "Welcome to Socket.IO Chat – ";
+      var message = "Hello " + data.username + ", your sensor is " + data.sensor;
       log(message, {
         prepend: true
       });
       addParticipantsMessage(data);
     });
-  
+
+     // Whenever the server emits 'login', log the login message
+    socket.on('illegal user', (data) => {
+      connected = true;
+      // Display the welcome message
+      var message = "Sorry " + data.username + ", is not allowed. You'll now be disconnected." ;
+      log(message, {
+        prepend: true
+      });
+    });
+
+    socket.on('ongoing workout', (data) => {
+      connected = true;
+      // Display the welcome message
+      var message = "Sorry " + data.username + ", is not allowed in the workout. Can't join now." ;
+      log(message, {
+        prepend: true
+      });
+    });
+
     // Whenever the server emits 'new message', update the chat body
     socket.on('new message', (data) => {
         console.log('DATA', data)
@@ -186,7 +204,7 @@ $(function() {
   
     // Whenever the server emits 'user joined', log it in the chat body
     socket.on('user joined', (data) => {
-      log(data.username + ' joined');
+      log(data.username + ' joined with sensor ' + data.sensor );
       addParticipantsMessage(data);
     });
   
@@ -194,6 +212,11 @@ $(function() {
     socket.on('user left', (data) => {
       log(data.username + ' left');
       addParticipantsMessage(data);
+    });
+
+    socket.on('workout', (data) => {
+      console.log(data.data)
+      log(data.data);
     });
   
     socket.on('disconnect', () => {

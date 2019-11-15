@@ -1,11 +1,17 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
+import EventEmitter from 'events';
 
 class Workout {
     public static instance
+
+    private event : EventEmitter
+
     private id : number
+
     private hasStarted : boolean
 
     private constructor() {
+        this.event = new EventEmitter();
         this.id = 1;
         this.hasStarted = false;
     }
@@ -15,6 +21,10 @@ class Workout {
             Workout.instance = new Workout();
         }
         return Workout.instance;
+    }
+
+    public emitter() {
+        return this.event;
     }
 
     public getWorkoutId() {
@@ -28,13 +38,19 @@ class Workout {
     public start(req: Request, res: Response) {
         this.id = req.body.id;
         this.hasStarted = true;
-        res.status(200).send({message : 'Workout has started!'});
+        this.event.emit('workout started');
+        res.status(200).send({ message: 'Workout has started!' });
     }
 
     public end(req: Request, res: Response) {
-        this.hasStarted = false;
-        res.status(200).send({message : 'Workout has ended!'});
+        if (req.body.id !== this.id) {
+            res.status(200).send({ message: 'Invalid Workout ID' });
+        } else {
+            this.hasStarted = false;
+            this.event.emit('workout ended');
+            res.status(200).send({ message: 'Workout has ended!' });
+        }
     }
-};
+}
 
 export default Workout;
