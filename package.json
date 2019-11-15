@@ -10,7 +10,9 @@
     "watch:build": "tsc --watch",
     "watch:server": "nodemon './dist/index.js' --watch './dist'",
     "test": "ts-mocha 'test/**/*.ts'",
-    "lint": "./node_modules/.bin/eslint 'src/**/*.ts'"
+    "lint": "./node_modules/.bin/eslint 'src/**/*.ts'",
+    "html2": "copyfiles /**/*.js /**/*.html /**/*.css dist/public",
+    "html": "cp -r ./src/public/ ./dist/public/"
   },
   "repository": {
     "type": "git",
@@ -32,6 +34,7 @@
     "@types/node": "^12.12.7",
     "@typescript-eslint/eslint-plugin": "^2.3.0",
     "@typescript-eslint/parser": "^2.6.0",
+    "copyfiles": "^2.1.1",
     "dotenv": "^8.2.0",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",

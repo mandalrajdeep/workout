@@ -42,6 +42,12 @@ class Socket {
             this.total += 1;
             userAdded = true;
             try {
+
+                /* 
+                 * simply the if part can be left out
+                 * if new users are to be allowed during a workout
+                 */
+
                 if (this.workout.isOn() && !this.connections[username]) {
                     socket.emit('ongoing workout', {
                         username: socket.username,
