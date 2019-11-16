@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import EventEmitter from 'events';
+import Allotment from './Allotment';
 
 class Workout {
     public static instance
@@ -40,6 +41,15 @@ class Workout {
         this.hasStarted = true;
         this.event.emit('workout started');
         res.status(200).send({ message: 'Workout has started!' });
+    }
+
+    public fetch(req : Request, res: Response) {
+        if (req.body.id !== this.id) {
+            res.status(200).send({ message: 'Invalid Workout ID' });
+        } else {
+            const allotment = Allotment.getInstance();
+            res.status(200).send({ workout : req.body.id, allocations : allotment.allocations() });    
+        }
     }
 
     public end(req: Request, res: Response) {

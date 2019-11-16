@@ -11,7 +11,6 @@
     "watch:server": "nodemon './dist/index.js' --watch './dist'",
     "test": "ts-mocha 'test/**/*.ts'",
     "lint": "./node_modules/.bin/eslint 'src/**/*.ts'",
-    "html2": "copyfiles /**/*.js /**/*.html /**/*.css dist/public",
     "html": "cp -r ./src/public/ ./dist/public/"
   },
   "repository": {
@@ -28,18 +27,25 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "socket.io": "^2.3.0"
+    "should": "^13.2.3",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.7",
     "@typescript-eslint/eslint-plugin": "^2.3.0",
     "@typescript-eslint/parser": "^2.6.0",
+    "chai": "^4.2.0",
     "copyfiles": "^2.1.1",
     "dotenv": "^8.2.0",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-typescript": "^3.0.0",
     "eslint-plugin-import": "^2.18.2",
+    "mocha": "^6.2.2",
+    "ts-mocha": "^6.0.0",
     "typescript": "^3.7.2"
   }
 }

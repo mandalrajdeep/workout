@@ -1,4 +1,4 @@
-import Allocation from '../services/Allotment';
+import Allocation from '../controllers/Allotment';
 import Workout from './Workout';
 
 class Socket {
@@ -63,6 +63,7 @@ class Socket {
             }
         });
         socket.on('disconnect', () => {
+            console.log('disconnect', this.total)
             this.total -= 1;
             socket.broadcast.emit('user left', {
                 numUsers: this.total,

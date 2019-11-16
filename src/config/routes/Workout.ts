@@ -11,6 +11,7 @@ class WorkRoute {
     }
 
     get routes() {
+        router.post('/list', this.workoutController.fetch.bind(this.workoutController));
         router.post('/', this.workoutController.start.bind(this.workoutController));
         router.post('/end', this.workoutController.end.bind(this.workoutController));
         return router;

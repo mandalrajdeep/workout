@@ -1,10 +1,5 @@
 $(function() {
     var FADE_TIME = 150; // ms
-    var COLORS = [
-      '#e21400', '#91580f', '#f8a700', '#f78b00',
-      '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
-      '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
-    ];
   
     // Initialize variables
     var $window = $(window);
@@ -17,9 +12,6 @@ $(function() {
   
     // Prompt for setting a username
     var username;
-    var connected = false;
-    var typing = false;
-    var lastTypingTime;
     var $currentInput = $usernameInput.focus();
   
     var socket = io();
@@ -50,40 +42,11 @@ $(function() {
       }
     }
   
-      // Adds the visual chat message to the message list
-
     // Log a message
       const log = (message, options) => {
       var $el = $('<li>').addClass('log').text(message);
       addMessageElement($el, options);
     }
-  
-    // Adds the visual chat message to the message list
-    const addChatMessage = (data, options) => {
-        console.log(data)
-      // Don't fade the message in if there is an 'X was typing'
-      var $typingMessages = getTypingMessages(data);
-      options = options || {};
-      if ($typingMessages.length !== 0) {
-        options.fade = false;
-        $typingMessages.remove();
-      }
-  
-      var $usernameDiv = $('<span class="username"/>')
-        .text(data.username)
-        .css('color', getUsernameColor(data.username));
-      var $messageBodyDiv = $('<span class="messageBody">')
-        .text(data.message);
-  
-      var typingClass = data.typing ? 'typing' : '';
-      var $messageDiv = $('<li class="message"/>')
-        .data('username', data.username)
-        .addClass(typingClass)
-        .append($usernameDiv, $messageBodyDiv);
-  
-      addMessageElement($messageDiv, options);
-    }
-  
   
     // Adds a message element to the messages and scrolls to the bottom
     // el - The element to add as a message
@@ -121,36 +84,21 @@ $(function() {
       return $('<div/>').text(input).html();
     }
   
-    // Gets the color of a username through our hash function
-    const getUsernameColor = (username) => {
-      // Compute hash code
-      var hash = 7;
-      for (var i = 0; i < username.length; i++) {
-         hash = username.charCodeAt(i) + (hash << 5) - hash;
-      }
-      // Calculate color
-      var index = Math.abs(hash % COLORS.length);
-      return COLORS[index];
-    }
-  
     // Keyboard events
   
     $window.keydown(event => {
-        console.log('lalal')
       // Auto-focus the current input when a key is typed
       if (!(event.ctrlKey || event.metaKey || event.altKey)) {
         $currentInput.focus();
       }
       // When the client hits ENTER on their keyboard
       if (event.which === 13) {
-          console.log('shsh')
         if (username) {
         } else {
           setUsername();
         }
       }
     });
-  
   
     // Click events
   
@@ -194,12 +142,6 @@ $(function() {
       log(message, {
         prepend: true
       });
-    });
-
-    // Whenever the server emits 'new message', update the chat body
-    socket.on('new message', (data) => {
-        console.log('DATA', data)
-      addChatMessage(data);
     });
   
     // Whenever the server emits 'user joined', log it in the chat body

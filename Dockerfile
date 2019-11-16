@@ -7,6 +7,6 @@ COPY . .
 
 # Install app dependencies
 ENV NPM_CONFIG_LOGLEVEL warn
-# RUN node_modules/.bin/tsc
+RUN node_modules/.bin/tsc
 
 CMD [ "npm", "run" , "deploy" ]
