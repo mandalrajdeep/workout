@@ -17,6 +17,8 @@ An application to manage and monitor sensor activity used by participants during
 ## Description (includes Assumptions)
 The *[GET] API* call returns a client webpage, which repicates a participant. As the webpage pops up, the participant is asked to enter their name. If the name is registered, a sensor will be assigned to him/her, and a socket connection is created.
 
+*The action of reloading a webpage will mock sensor failure*
+
 If the participant has their own sensor, they will get that sensor only (if that sensor is in working condition). No one else gets these owned sensors under any circumstances.
 
 If you reload the webpage, the socket gets diconnected, and this event is understood as the sensor becoming non functional. The participant will once again be asked to enter their name, and a new working sensor will be allocated. The discarded sensor will not be assigned to anyone now.
@@ -41,9 +43,12 @@ Start the server locally, and then start the test server in a seperate window. T
  > npm run test
 ### Production Mode
 The Dockerfile has been created, but not tested (time constratins)
+
 > tsc
 
- > npm run deploy
+> npm run html
+
+> npm run deploy
 
 ## APIs
 ```

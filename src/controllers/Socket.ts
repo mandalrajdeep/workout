@@ -1,4 +1,4 @@
-import Allocation from '../controllers/Allotment';
+import Allocation from './Allotment';
 import Workout from './Workout';
 
 class Socket {
@@ -42,8 +42,8 @@ class Socket {
             this.total += 1;
             userAdded = true;
             try {
-
-                /* 
+                
+                /*
                  * simply the if part can be left out
                  * if new users are to be allowed during a workout
                  */
@@ -63,7 +63,7 @@ class Socket {
             }
         });
         socket.on('disconnect', () => {
-            console.log('disconnect', this.total)
+            console.log('disconnect', this.total);
             this.total -= 1;
             socket.broadcast.emit('user left', {
                 numUsers: this.total,

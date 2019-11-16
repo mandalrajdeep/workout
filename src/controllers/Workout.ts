@@ -48,7 +48,7 @@ class Workout {
             res.status(200).send({ message: 'Invalid Workout ID' });
         } else {
             const allotment = Allotment.getInstance();
-            res.status(200).send({ workout : req.body.id, allocations : allotment.allocations() });    
+            res.status(200).send({ workout: req.body.id, allocations: allotment.allocations() });
         }
     }
 
